@@ -20,7 +20,9 @@
 #include "hal_core/netlist/netlist_utils.h"
 #include "hal_core/plugin_system/plugin_manager.h"
 #include "hal_core/utilities/log.h"
-
+#include "dataflow_analysis/evaluation/similarity_score.h"
+#include "dataflow_analysis/evaluation/generate_reference.h"
+#include "dataflow_analysis/evaluation/compare_to_reference.h"
 #include <chrono>
 #include <fstream>
 #include <iomanip>
@@ -29,6 +31,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <thread>
+#include <filesystem>
 
 namespace hal
 {
@@ -178,10 +181,17 @@ namespace hal
         total_time += (double)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - begin_time).count() / 1000;
 
         log_info("dataflow", "");
+        
+        auto ref_state = evaluation::generate_reference(netlist_abstr);
+
 
         nlohmann::json output_json;
-
+        hal::evaluation::SimilarityScore pre_similarity;
+        pre_similarity.nmi=0;
+        pre_similarity.purity=0;
         u32 iteration = 0;
+        int bad = 0;
+        std::filesystem::remove("../plugins/dataflow_analysis/src/evaluation/the_saved_model.pth");
         while (true)
         {
             log("iteration {}", iteration);
@@ -195,21 +205,38 @@ namespace hal
             auto eval_result       = dataflow::evaluation::run(eval_config, eval_ctx, initial_grouping, processing_result);
 
             total_time += (double)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - begin_time).count() / 1000;
+            
+            auto similarity_scores = evaluation::compare_to_reference(processing_result, eval_result, ref_state);
 
             std::string file_name = "result" + std::to_string(iteration) + ".txt";
             dataflow::textual_output::write_register_output(eval_result.merged_result, output_path, file_name);
-
+		
             dataflow::json_output::save_state_to_json(iteration, netlist_abstr, processing_result, eval_result, false, output_json);
 
             // end of analysis(?)
-
-            if (eval_result.is_final_result)
+            if(similarity_scores[eval_result.merged_result].nmi<=pre_similarity.nmi || similarity_scores[eval_result.merged_result].purity<=pre_similarity.purity)
             {
+                bad++; 
+            }
+            else
+            {
+                bad=0;
+            }
+            //if (eval_result.is_final_result || (similarity_scores[eval_result.merged_result].nmi<=pre_similarity.nmi && similarity_scores[eval_result.merged_result].purity<=pre_similarity.purity))
+            if (eval_result.is_final_result || bad>=2)
+            {
+                std::ofstream outfile;
+
+                outfile.open("/home/osboxes/hal/plugins/dataflow_analysis/src/evaluation/hal_output_log.txt", std::ios_base::app); // append instead of overwrite
+                outfile << "nmi score = "<< similarity_scores[eval_result.merged_result].nmi<<" "; 
+                outfile << "purity score = "<< similarity_scores[eval_result.merged_result].purity<<" ";
+                outfile << "total time = "<< total_time<<std::endl;
                 log("got final result");
                 final_grouping = eval_result.merged_result;
                 break;
             }
-
+            pre_similarity.nmi = similarity_scores[eval_result.merged_result].nmi;
+            pre_similarity.purity = similarity_scores[eval_result.merged_result].purity;
             initial_grouping = eval_result.merged_result;
 
             iteration++;

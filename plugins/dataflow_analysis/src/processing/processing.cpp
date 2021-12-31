@@ -16,6 +16,7 @@
 #include <iostream>
 #include <thread>
 
+
 namespace hal
 {
     namespace dataflow
@@ -146,11 +147,12 @@ namespace hal
             Result run(const Configuration& config, const std::shared_ptr<Grouping>& initial_grouping)
             {
                 log_info("dataflow", "starting pipeline with {} threads", config.num_threads);
-
+                //######### ADDED HERE #########
                 Context ctx;
                 ctx.num_iterations = 0;
                 ctx.phase          = 0;
                 ctx.end_reached    = false;
+                
 
                 for (u32 layer = 0; layer < config.pass_layers; layer++)
                 {
@@ -175,6 +177,7 @@ namespace hal
                     }
 
                     process_pass_configuration(config, ctx);
+
 
                     // wait for threads to finish
                     for (auto& worker : workers)
@@ -216,6 +219,9 @@ namespace hal
                             }
                         }
                         ctx.result.unique_groupings.push_back(new_state_i);
+                        
+                       
+                       	
                         all_new_results.push_back(ctx.new_unique_groupings[i]);
                         num_unique_filtered++;
                     }
@@ -258,7 +264,74 @@ namespace hal
                     }
                     log_info("dataflow", "  total: {} unique states", ctx.result.unique_groupings.size());
                 }
+                // for each grouping, and for each group, we will add a vector containing 1's only
+                //in the corresponding indexes(gates) so we can use this encoding((embedding)) as an input to the Kmeans
+                int sq_size = initial_grouping->netlist_abstr.all_sequential_gates.size();
+
+                //we are only interested in sequential gates, not all gates, so we will do a maping from sequential gates to
+                //consecutive gates in a way that we can save space, since we are doing one hot encoding.
+                std::vector<u32> s_gates;
+                s_gates.reserve(sq_size);
+                std::transform(initial_grouping->netlist_abstr.all_sequential_gates.begin(), initial_grouping->netlist_abstr.all_sequential_gates.end(), std::back_inserter(s_gates), [](auto& g)
+                    { return g->get_id(); });
+				std::sort(s_gates.begin(), s_gates.end());
+                std::map<u32, u32> s_gates_maping;
+                for (size_t i = 0; i < s_gates.size(); i++)
+                {
+                    s_gates_maping[s_gates[i]]=i;
+                }
+
+                int groupings_num = ctx.result.unique_groupings.size();
+                int curr_grouping=0;
+                //all_results contains all the groups from all the groupings gatherd together
+                std::vector<std::set<u32>> all_results;
+                //all_groups_em is a one hot encoding for all the groups
+                std::vector<std::vector<u32>> all_groups_em;
+                std::map<std::vector<u32>, std::vector<u32>> group_em_count;
+                for (auto& state : ctx.result.unique_groupings)
+                {	 
+                    u32 pass_combinations_leading_to_grouping=ctx.result.pass_combinations_leading_to_grouping.at(state).size();	
+                    for (auto& gates: state->gates_of_group)
+                    {
+                        if(gates.second.size() > 0)
+                        {
+                        	std::set<u32> sorted_gates(gates.second.begin(), gates.second.end());
+                        	if(std::find(all_results.begin(), all_results.end(), sorted_gates)==all_results.end())
+                        	{
+                                
+                        		all_results.push_back(sorted_gates);
+                        	}
+
+							std::vector<u32> state_group_em = std::vector<u32>(sq_size, 0);
+							for (auto sq = gates.second.begin(); sq !=  gates.second.end(); sq++)
+							{
+								state_group_em[s_gates_maping[(*sq)]]=1;
+				
+							}
+							if(group_em_count.find(state_group_em) == group_em_count.end())
+							{
+								all_groups_em.push_back(state_group_em);
+								std::vector<u32> temp(groupings_num ,0);
+								temp[curr_grouping]=pass_combinations_leading_to_grouping;
+								group_em_count[state_group_em]=temp;	
+							}
+                            else
+                            {
+                                group_em_count[state_group_em][curr_grouping]=pass_combinations_leading_to_grouping;
+                            }   
+                        }
+                    }
+                    curr_grouping++;
+                }
+				for (auto& group : all_groups_em){
+					group.insert(group.end(), group_em_count[group].begin() ,group_em_count[group].end());
+				}
                 
+                ctx.result.groups_embedding = all_groups_em;
+                ctx.result.all_results = all_results;
+                ctx.result.s_gates = s_gates;
+                ctx.result.s_gates_maping = s_gates_maping;
+
                 return ctx.result;
             }
 

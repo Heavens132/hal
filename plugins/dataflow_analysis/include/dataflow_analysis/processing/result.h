@@ -29,6 +29,8 @@
 
 #include <map>
 
+
+
 namespace hal
 {
     namespace dataflow
@@ -40,8 +42,16 @@ namespace hal
                 std::vector<std::shared_ptr<Grouping>> unique_groupings;
                 std::map<std::shared_ptr<Grouping>, std::vector<std::vector<pass_id>>> pass_combinations_leading_to_grouping;
                 std::map<std::vector<pass_id>, std::shared_ptr<Grouping>> groupings;
+                // a vector containing each group of every grouping 
+                // each group is a vector containing 1's only in the corresponding indexes(gates)
+                std::vector<std::vector<u32>> groups_embedding;
+                std::vector<std::set<u32>> all_results;
+                std::vector<u32> s_gates;
+                std::map<u32, u32> s_gates_maping;
+
             };
 
         }    // namespace processing
     }        // namespace dataflow
 }    // namespace hal
+

@@ -1,0 +1,121 @@
+
+################################################################
+Fri 17 Dec 2021 04:48:37 PM UTC
+with sizes:
+present results:
+nmi score = 0.857033 purity score = 1 total time = 108.387
+open8 results:
+nmi score = 0.971424 purity score = 0.956731 total time = 228.492
+DES results:
+nmi score = 0.938686 purity score = 0.753036 total time = 3151.17
+SHA-3 results:
+nmi score = 0.896833 purity score = 0.987973 total time = 282.14
+ibex results:
+nmi score = 0.971607 purity score = 0.956669 total time = 3191.42
+edge results:
+nmi score = 0.984177 purity score = 0.963469 total time = 4457.93
+tiny AES results:
+RSA results:
+nmi score = 0.984837 purity score = 0.941021 total time = 6921.74
+present results:
+nmi score = 0.857033 purity score = 1 total time = 54.596
+open8 results:
+nmi score = 0.9315 purity score = 0.846154 total time = 96.635
+DES results:
+nmi score = 0.862966 purity score = 0.553644 total time = 585.662
+SHA-3 results:
+nmi score = 0.239133 purity score = 0.98931 total time = 2725.99
+ibex results:
+edge results:
+################################################################
+Sat 18 Dec 2021 12:08:00 AM UTC
+with sizes:
+present results:
+nmi score = 0.943031 purity score = 1 total time = 18.034
+open8 results:
+nmi score = 0.971424 purity score = 0.956731 total time = 97.015
+DES results:
+nmi score = 0.937229 purity score = 0.748988 total time = 884.196
+SHA-3 results:
+nmi score = 0.962644 purity score = 0.987973 total time = 272.79
+ibex results:
+nmi score = 0.971607 purity score = 0.956669 total time = 2318.32
+edge results:
+################################################################
+Sat 18 Dec 2021 09:16:30 AM UTC
+with sizes:
+present results:
+nmi score = 0.943031 purity score = 1 total time = 15.377
+open8 results:
+nmi score = 0.971424 purity score = 0.956731 total time = 94.337
+DES results:
+nmi score = 0.936461 purity score = 0.744939 total time = 922.44
+SHA-3 results:
+nmi score = 0.896833 purity score = 0.987973 total time = 251.453
+ibex results:
+nmi score = 0.971607 purity score = 0.956669 total time = 2861.09
+edge results:
+nmi score = 0.984177 purity score = 0.963469 total time = 3176.61
+tiny AES results:
+RSA results:
+nmi score = 0.984837 purity score = 0.941021 total time = 5108.3
+without sizes:
+present results:
+nmi score = 0.857033 purity score = 1 total time = 54.332
+open8 results:
+nmi score = 0.9315 purity score = 0.846154 total time = 67.519
+DES results:
+nmi score = 0.921684 purity score = 0.986842 total time = 2403.11
+SHA-3 results:
+nmi score = 0.239133 purity score = 0.98931 total time = 2255.12
+ibex results:
+nmi score = 0.96005 purity score = 0.958369 total time = 4447.27
+edge results:
+nmi score = 0.981879 purity score = 0.954592 total time = 2732.05
+tiny AES results:
+RSA results:
+################################################################
+Sat 18 Dec 2021 07:08:43 PM UTC
+with sizes:
+tiny AES results:
+
+################################################################
+Sat 18 Dec 2021 07:40:58 PM UTC
+with sizes:
+tiny AES results:
+RSA results:
+nmi score = 0.984837 purity score = 0.941021 total time = 8562.63
+without sizes:
+tiny AES results:
+RSA results:
+
+nmi score = 0.832166 purity score = 0.714286 total time = 6249.5
+nmi score = 0.971424 purity score = 0.956731 total time = 289.216
+nmi score = 0.943031 purity score = 1 total time = 16.766
+nmi score = 0.943031 purity score = 1 total time = 31.721
+nmi score = 0.916573 purity score = 1 total time = 96.804
+nmi score = 0.916573 purity score = 1 total time = 95.252
+nmi score = 0.916573 purity score = 1 total time = 94.81
+nmi score = 0.964987 purity score = 0.942308 total time = 410.939
+nmi score = 0.978213 purity score = 0.956731 total time = 506.625
+################################################################
+Wed 29 Dec 2021 10:20:50 PM UTC
+with sizes:
+present results:
+nmi score = 0.916573 purity score = 1 total time = 149.118
+open8 results:
+nmi score = 0.967518 purity score = 0.951923 total time = 981.697
+DES results:
+nmi score = 0.858552 purity score = 0.51417 total time = 1239.75
+SHA-3 results:
+nmi score = 0.969802 purity score = 0.988419 total time = 515.938
+without sizes:
+present results:
+nmi score = 0.149704 purity score = 0.543046 total time = 92.036
+open8 results:
+nmi score = 0.957543 purity score = 0.932692 total time = 544.199
+DES results:
+nmi score = 0.849033 purity score = 0.48583 total time = 566.073
+SHA-3 results:
+nmi score = 0.969802 purity score = 0.988419 total time = 483.384
+################################################################
