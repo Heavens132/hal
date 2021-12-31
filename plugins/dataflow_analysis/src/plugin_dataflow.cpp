@@ -20,9 +20,13 @@
 #include "hal_core/netlist/netlist_utils.h"
 #include "hal_core/plugin_system/plugin_manager.h"
 #include "hal_core/utilities/log.h"
+<<<<<<< HEAD
 #include "dataflow_analysis/evaluation/similarity_score.h"
 #include "dataflow_analysis/evaluation/generate_reference.h"
 #include "dataflow_analysis/evaluation/compare_to_reference.h"
+=======
+
+>>>>>>> f9875986779e3da88a60f66fc7667a162ca19e66
 #include <chrono>
 #include <fstream>
 #include <iomanip>
@@ -31,7 +35,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <thread>
+<<<<<<< HEAD
 #include <filesystem>
+=======
+>>>>>>> f9875986779e3da88a60f66fc7667a162ca19e66
 
 namespace hal
 {
@@ -181,6 +188,7 @@ namespace hal
         total_time += (double)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - begin_time).count() / 1000;
 
         log_info("dataflow", "");
+<<<<<<< HEAD
         
         auto ref_state = evaluation::generate_reference(netlist_abstr);
 
@@ -192,6 +200,12 @@ namespace hal
         u32 iteration = 0;
         int bad = 0;
         std::filesystem::remove("../plugins/dataflow_analysis/src/evaluation/the_saved_model.pth");
+=======
+
+        nlohmann::json output_json;
+
+        u32 iteration = 0;
+>>>>>>> f9875986779e3da88a60f66fc7667a162ca19e66
         while (true)
         {
             log("iteration {}", iteration);
@@ -205,6 +219,7 @@ namespace hal
             auto eval_result       = dataflow::evaluation::run(eval_config, eval_ctx, initial_grouping, processing_result);
 
             total_time += (double)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - begin_time).count() / 1000;
+<<<<<<< HEAD
             
             auto similarity_scores = evaluation::compare_to_reference(processing_result, eval_result, ref_state);
 
@@ -231,12 +246,28 @@ namespace hal
                 outfile << "nmi score = "<< similarity_scores[eval_result.merged_result].nmi<<" "; 
                 outfile << "purity score = "<< similarity_scores[eval_result.merged_result].purity<<" ";
                 outfile << "total time = "<< total_time<<std::endl;
+=======
+
+            std::string file_name = "result" + std::to_string(iteration) + ".txt";
+            dataflow::textual_output::write_register_output(eval_result.merged_result, output_path, file_name);
+
+            dataflow::json_output::save_state_to_json(iteration, netlist_abstr, processing_result, eval_result, false, output_json);
+
+            // end of analysis(?)
+
+            if (eval_result.is_final_result)
+            {
+>>>>>>> f9875986779e3da88a60f66fc7667a162ca19e66
                 log("got final result");
                 final_grouping = eval_result.merged_result;
                 break;
             }
+<<<<<<< HEAD
             pre_similarity.nmi = similarity_scores[eval_result.merged_result].nmi;
             pre_similarity.purity = similarity_scores[eval_result.merged_result].purity;
+=======
+
+>>>>>>> f9875986779e3da88a60f66fc7667a162ca19e66
             initial_grouping = eval_result.merged_result;
 
             iteration++;
@@ -263,4 +294,8 @@ namespace hal
 
         return dataflow::state_to_module::create_sets(nl, final_grouping);
     }
+<<<<<<< HEAD
 }    // namespace hal
+=======
+}    // namespace hal
+>>>>>>> f9875986779e3da88a60f66fc7667a162ca19e66

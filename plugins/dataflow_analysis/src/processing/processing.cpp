@@ -16,7 +16,10 @@
 #include <iostream>
 #include <thread>
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f9875986779e3da88a60f66fc7667a162ca19e66
 namespace hal
 {
     namespace dataflow
@@ -147,12 +150,19 @@ namespace hal
             Result run(const Configuration& config, const std::shared_ptr<Grouping>& initial_grouping)
             {
                 log_info("dataflow", "starting pipeline with {} threads", config.num_threads);
+<<<<<<< HEAD
                 //######### ADDED HERE #########
+=======
+
+>>>>>>> f9875986779e3da88a60f66fc7667a162ca19e66
                 Context ctx;
                 ctx.num_iterations = 0;
                 ctx.phase          = 0;
                 ctx.end_reached    = false;
+<<<<<<< HEAD
                 
+=======
+>>>>>>> f9875986779e3da88a60f66fc7667a162ca19e66
 
                 for (u32 layer = 0; layer < config.pass_layers; layer++)
                 {
@@ -178,7 +188,10 @@ namespace hal
 
                     process_pass_configuration(config, ctx);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f9875986779e3da88a60f66fc7667a162ca19e66
                     // wait for threads to finish
                     for (auto& worker : workers)
                     {
@@ -219,9 +232,12 @@ namespace hal
                             }
                         }
                         ctx.result.unique_groupings.push_back(new_state_i);
+<<<<<<< HEAD
                         
                        
                        	
+=======
+>>>>>>> f9875986779e3da88a60f66fc7667a162ca19e66
                         all_new_results.push_back(ctx.new_unique_groupings[i]);
                         num_unique_filtered++;
                     }
@@ -264,6 +280,7 @@ namespace hal
                     }
                     log_info("dataflow", "  total: {} unique states", ctx.result.unique_groupings.size());
                 }
+<<<<<<< HEAD
                 // for each grouping, and for each group, we will add a vector containing 1's only
                 //in the corresponding indexes(gates) so we can use this encoding((embedding)) as an input to the Kmeans
                 int sq_size = initial_grouping->netlist_abstr.all_sequential_gates.size();
@@ -332,6 +349,9 @@ namespace hal
                 ctx.result.s_gates = s_gates;
                 ctx.result.s_gates_maping = s_gates_maping;
 
+=======
+                
+>>>>>>> f9875986779e3da88a60f66fc7667a162ca19e66
                 return ctx.result;
             }
 
